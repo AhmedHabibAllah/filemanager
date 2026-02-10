@@ -9,9 +9,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --primary-color: #1976d2;
-            --bg-color: #f0f8ff;
-            --text-color: #000000;
+            --primary-color: #6200ea; /* بنفسجي عصري */
+            --accent-color: #00e676; /* أخضر فسفوري */
+            --danger-color: #ff1744;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
             --sidebar-width: 350px;
         }
 
@@ -26,6 +28,18 @@
             font-size: 18px;
         }
 
+        /* حركات الانيميشن */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 230, 118, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); } }
+
+        .animate-fade { animation: fadeIn 0.5s ease-out forwards; }
+        
+        /* تخصيص شريط التمرير */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4500b5; }
+
         /* شاشات الدخول */
         .center-screen {
             display: flex;
@@ -37,7 +51,7 @@
             right: 0;
             bottom: 0;
             z-index: 10;
-            background: var(--bg-color);
+            background: linear-gradient(135deg, var(--bg-color) 0%, #e0e7ff 100%);
             transition: all 0.3s;
             overflow: auto;
             padding: 20px;
@@ -46,13 +60,14 @@
         }
 
         .box {
-            background: white;
+            background: var(--card-bg);
             padding: 40px;
-            border-radius: 12px;
+            border-radius: 20px;
             width: 95%;
             max-width: 500px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
             text-align: center;
+            border-top: 5px solid var(--primary-color);
         }
 
         h2 {
@@ -76,6 +91,7 @@
             justify-content: center;
             gap: 8px;
             font-weight: 600;
+            box-shadow: 0 4px 15px rgba(98, 0, 234, 0.2);
         }
 
         .btn:hover {
@@ -85,14 +101,24 @@
 
         .btn-outline {
             background: #ffffff;
-            border: 2px solid var(--primary-color);
+            border: 2px solid #e0e0e0;
             color: var(--primary-color);
             font-weight: 600;
+            box-shadow: none;
         }
 
         .btn-outline:hover {
-            background: var(--primary-color);
-            color: white;
+            border-color: var(--primary-color);
+            background: #f3e5f5;
+        }
+
+        .btn-success {
+            background: var(--accent-color);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3);
+        }
+        .btn-success:hover {
+            background: #00c853;
         }
 
         input,
@@ -107,6 +133,12 @@
             font-family: inherit;
             font-size: 16px;
             font-weight: 500;
+            transition: 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(98, 0, 234, 0.1);
         }
 
         /* شاشة البيانات الرئيسية */
@@ -144,17 +176,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: white;
+            background: var(--card-bg);
             padding: 15px 20px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             position: sticky;
             top: 0;
             z-index: 10;
+            border-bottom: 3px solid var(--accent-color);
         }
 
         /* الجدول */
         .table-container {
-            background: white;
+            background: var(--card-bg);
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             overflow-x: auto;
@@ -183,12 +216,12 @@
         }
 
         tr:hover {
-            background-color: #f9f9f9;
+            background-color: #f0f7ff;
             cursor: pointer;
         }
 
         tr.selected {
-            background-color: #e3f2fd;
+            background-color: #ede7f6;
             border-right: 4px solid var(--primary-color);
         }
 
@@ -292,10 +325,15 @@
         }
 
         .stats-card {
-            background: white;
+            background: var(--card-bg);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--accent-color);
+            transition: transform 0.3s;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
         }
 
         /* الإعدادات */
@@ -334,6 +372,54 @@
             overflow-y: auto;
         }
 
+        /* Excel Paste Area */
+        .excel-paste-area {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: monospace;
+            white-space: pre;
+            overflow: auto;
+            background: #fafafa;
+        }
+        .excel-paste-area:focus {
+            border-color: var(--primary-color);
+            background: #fff;
+        }
+
+        /* Footer Credits */
+        .app-footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            background: #2d3436;
+            color: #dfe6e9;
+            border-radius: 10px;
+            font-size: 14px;
+            border-bottom: 4px solid var(--accent-color);
+        }
+        .developer-name {
+            color: var(--accent-color);
+            font-weight: 800;
+            font-size: 16px;
+            display: inline-block;
+            margin: 0 5px;
+        }
+
+        /* Search Box */
+        .search-box-container {
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+        }
+
         /* متجاوب */
         @media (max-width: 768px) {
             .box {
@@ -364,9 +450,9 @@
 
     <!-- شاشة الدخول الرئيسية -->
     <div class="center-screen" id="loginScreen">
-        <div class="box">
-            <h2>🏛️ نظام الأرشفة الذكي</h2>
-            <p style="color:#666; margin-bottom:30px;">نظام متكامل لإدارة وأرشفة الملفات الإلكترونية</p>
+        <div class="box animate-fade">
+            <h2>🎓 نظام ملفات الطلاب الذكي</h2>
+            <p style="color:#666; margin-bottom:30px;">إدارة احترافية وسلسة لبيانات وملفات الطلاب</p>
 
             <select id="stageSelect" class="btn" style="background: white; color: #333; margin-bottom: 15px;">
                 <option value="">اختر القسم...</option>
@@ -380,6 +466,10 @@
             <button class="btn btn-outline" onclick="showAdminLogin()">
                 <span>🔒</span> دخول الإدارة
             </button>
+
+            <div style="margin-top: 30px; font-size: 12px; color: #999;">
+                تطوير وتصميم: <span style="color: var(--primary-color); font-weight: bold;">الأستاذ أحمد حبيب الله</span>
+            </div>
         </div>
     </div>
 
@@ -400,6 +490,8 @@
         <div class="header-bar">
             <h3 id="employeeName" style="margin:0;"></h3>
             <div style="display: flex; gap: 10px;">
+                <button class="btn btn-success" id="btnAddStudentsBtn" onclick="showAddStudentsModal()" style="width:auto; display:none;">➕ إضافة طلاب (Excel)</button>
+                <button class="btn btn-success" id="btnAddGeneralFile" onclick="prepareGeneralUpload()" style="width:auto; display:none;">➕ إضافة ملف عام</button>
                 <button class="btn btn-outline" onclick="showStats()" style="width:auto;">📊 إحصائيات</button>
                 <button class="btn btn-outline" onclick="showEmployeeSettings()" style="width:auto;">⚙️</button>
                 <button class="btn" onclick="logout()" style="width:auto;">خروج</button>
@@ -410,47 +502,70 @@
             <!-- الجزء الأيمن: المحتوى والجدول -->
             <div class="content-panel">
                 
+                <!-- البحث العام -->
+                <div class="search-box-container animate-fade">
+                    <span style="font-size: 20px;">🔍</span>
+                    <input type="text" id="globalSearch" placeholder="بحث عن طالب (الاسم أو الرقم)..." style="margin:0; border:none; background:transparent;" onkeyup="filterStudents()">
+                    <select id="searchFilter" style="width: 150px; margin:0; border:none; background: #f5f5f5;">
+                        <option value="all">الكل</option>
+                        <option value="name">الاسم</option>
+                        <option value="id">رقم الطالب</option>
+                    </select>
+                    <select id="statusFilter" style="width: 150px; margin:0; border:none; background: #f5f5f5;" onchange="filterStudents()">
+                        <option value="all">جميع الحالات</option>
+                        <option value="review">تمت المراجعة</option>
+                        <option value="pending">معلق</option>
+                        <option value="accepted">مقبول</option>
+                        <option value="rejected">مرفوض</option>
+                        <option value="not_uploaded">لم يتم الرفع</option>
+                    </select>
+                </div>
+
                 <!-- شريط الفلترة (للمدير فقط) -->
                 <div id="adminFilters" style="display: none; gap: 10px; margin-bottom: 20px; background: white; padding: 15px; border-radius: 10px; align-items: center;">
                     <strong style="margin-left: 10px;">🔍 تصفية البيانات:</strong>
-                    <select id="filterStage" class="btn btn-outline" style="margin: 0; width: auto;" onchange="loadFiles()">
+                    <select id="filterStage" class="btn btn-outline" style="margin: 0; width: auto;" onchange="loadData()">
                         <option value="">كل الأقسام</option>
                     </select>
-                    <input type="date" id="filterDate" class="btn btn-outline" style="margin: 0; width: auto; color: #333;" onchange="loadFiles()">
                     <button class="btn" onclick="resetFilters()" style="width: auto; margin: 0;">↺ إعادة تعيين</button>
                 </div>
 
                 <!-- قسم الإحصائيات -->
-                <div id="statsSection" class="stats-container" style="display: none;">
+                <div id="statsSection" class="stats-container animate-fade" style="display: none;">
                     <div class="stats-card">
-                        <h4>📈 إجمالي الملفات</h4>
-                        <p id="totalFiles" style="font-size: 24px; font-weight: bold; text-align: center; margin: 10px 0;">0
+                        <h4>👥 إجمالي الطلاب</h4>
+                        <p id="totalStudents" style="font-size: 24px; font-weight: bold; text-align: center; margin: 10px 0; color: var(--primary-color);">0
                         </p>
                     </div>
                     <div class="stats-card">
-                        <h4>📂 الملفات حسب النوع</h4>
-                        <canvas id="typeChart" style="max-height: 200px;"></canvas>
+                        <h4>📂 الملفات المنجزة</h4>
+                        <p id="completedFiles" style="font-size: 24px; font-weight: bold; text-align: center; margin: 10px 0; color: var(--accent-color);">0</p>
                     </div>
                     <div class="stats-card">
-                        <h4>📅 الملفات حسب التاريخ</h4>
-                        <canvas id="dateChart" style="max-height: 200px;"></canvas>
+                        <h4>📊 نسبة الإنجاز</h4>
+                        <div style="background: #eee; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 10px;">
+                            <div id="progressBar" style="width: 0%; background: var(--accent-color); height: 100%; transition: width 1s;"></div>
+                        </div>
+                        <p id="completionRate" style="text-align: center; font-weight: bold; margin-top: 5px;">0%</p>
                     </div>
                 </div>
 
                 <!-- نموذج إضافة ملف -->
-                <div id="addFileForm" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                    <h3 style="margin-top: 0;">📤 إضافة ملف جديد</h3>
+                <div id="addFileForm" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: none; border-right: 5px solid var(--accent-color);">
+                    <div style="display:flex; justify-content:space-between;">
+                        <h3 style="margin-top: 0;">📤 رفع ملف للطالب: <span id="uploadStudentName" style="color: var(--primary-color);"></span></h3>
+                        <button onclick="hideUploadForm()" style="background:none; border:none; font-size:20px; cursor:pointer;">✕</button>
+                    </div>
+                    <input type="hidden" id="uploadStudentId">
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
                         <div>
                             <label>العنوان</label>
-                            <input type="text" id="fileTitle" placeholder="عنوان الملف">
+                            <input type="text" id="fileTitle" placeholder="مثال: شهادة الفصل الأول">
                         </div>
                         <div>
                             <label>النوع</label>
                             <select id="fileType">
                                 <option value="pdf">PDF</option>
-                                <option value="word">Word</option>
-                                <option value="excel">Excel</option>
                                 <option value="image">صورة</option>
                                 <option value="other">أخرى</option>
                             </select>
@@ -458,10 +573,6 @@
                         <div>
                             <label>رابط الملف (Google Drive)</label>
                             <input type="text" id="fileUrl" placeholder="https://drive.google.com/...">
-                        </div>
-                        <div>
-                            <label>تاريخ الرفع</label>
-                            <input type="date" id="uploadDate" value="">
                         </div>
                     </div>
                     <div>
@@ -472,20 +583,39 @@
                 </div>
 
                 <!-- جدول الملفات -->
-                <div class="table-container">
-                    <table id="filesTable">
+                <div class="table-container animate-fade">
+                    <table id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>رقم الطالب</th>
+                                <th>اسم الطالب</th>
+                                <th>القسم</th>
+                                <th>حالة الملف</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <!-- سيتم تعبئة الملفات هنا -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- جدول الملفات العامة -->
+                <h3 style="margin-top: 40px; border-bottom: 2px solid #eee; padding-bottom: 10px;">🗂️ ملفات عامة للقسم</h3>
+                <div class="table-container animate-fade" id="generalFilesContainer">
+                    <table id="generalFilesTable">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>العنوان</th>
                                 <th>النوع</th>
-                                <th>الرابط</th>
-                                <th>التاريخ</th>
+                                <th>تاريخ الرفع</th>
                                 <th>الحالة</th>
                                 <th>الإجراءات</th>
                             </tr>
                         </thead>
-                        <tbody id="filesTableBody">
+                        <tbody id="generalFilesTableBody">
                             <!-- سيتم تعبئة الملفات هنا -->
                         </tbody>
                     </table>
@@ -500,6 +630,15 @@
             </div>
         </div>
 
+        <!-- Footer -->
+        <div class="app-footer">
+            <div>جميع الحقوق محفوظة © 2026</div>
+            <div style="margin-top: 10px;">
+                تطوير وتصميم: <span class="developer-name">الأستاذ أحمد حبيب الله</span>
+            </div>
+            <div style="font-size: 12px; margin-top: 5px; opacity: 0.7;">designissue@gmail.com</div>
+        </div>
+
         <!-- القائمة الجانبية لتفاصيل الملف -->
         <div class="sidebar" id="fileDetailsSidebar">
             <div class="sidebar-header">
@@ -511,6 +650,28 @@
                 <button class="btn" onclick="openExternal()" style="margin-top: 20px;">🔗 فتح في نافذة جديدة</button>
                 <button class="btn btn-outline" onclick="updateFileStatus()" style="margin-top: 10px;">✏️ تعديل
                     الحالة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- شاشة إضافة طلاب (Excel) -->
+    <div class="modal" id="addStudentsModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <h2 style="text-align:center; color: var(--primary-color);">📊 إضافة طلاب (نسخ من Excel)</h2>
+            <p style="text-align: center; color: #666;">قم بنسخ الأعمدة من Excel بالترتيب: <strong>[رقم الطالب] [الاسم]</strong> ثم الصقها هنا.</p>
+            
+            <div style="margin-bottom: 15px;">
+                <label>القسم المستهدف:</label>
+                <select id="excelTargetStage" class="btn btn-outline" style="margin-bottom: 10px;"></select>
+            </div>
+
+            <textarea id="excelPasteArea" class="excel-paste-area" placeholder="1001	أحمد محمد&#10;1002	خالد علي&#10;..."></textarea>
+            
+            <div id="excelPreview" style="margin-top: 15px; max-height: 200px; overflow-y: auto; border: 1px solid #eee; display: none;"></div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-success" onclick="processAndSaveStudents()">💾 حفظ الطلاب</button>
+                <button class="btn btn-outline" onclick="closeModal('addStudentsModal')">إلغاء</button>
             </div>
         </div>
     </div>
@@ -558,22 +719,22 @@
         let currentEmployee = null;
         let currentStage = null;
         let currentFileId = null;
-        let currentFileUrl = null;
-        let filesData = [];
+        let studentsData = [];
         let allStages = [];
+        let allFiles = []; // لتخزين الملفات المرفوعة
 
         // مصفوفة الحالات الممكنة
         const fileStatuses = [
             { value: 'pending', label: 'معلق' },
+            { value: 'uploaded', label: 'تم الرفع' },
             { value: 'accepted', label: 'مقبول' },
             { value: 'rejected', label: 'مرفوض' },
-            { value: 'review', label: 'تحت المراجعة' }
+            { value: 'review', label: 'تمت المراجعة' }
         ];
 
         // تهيئة التطبيق
         async function initApp() {
             await loadStages();
-            setTodayDate();
         }
 
         // تحميل الأقسام من قاعدة البيانات
@@ -588,6 +749,7 @@
 
                 const select = document.getElementById('stageSelect');
                 const filterSelect = document.getElementById('filterStage');
+                const excelSelect = document.getElementById('excelTargetStage');
                 select.innerHTML = '<option value="">اختر القسم...</option>';
                 filterSelect.innerHTML = '<option value="">كل الأقسام</option>';
 
@@ -602,6 +764,10 @@
                     // تعبئة فلتر المدير أيضاً
                     const filterOption = option.cloneNode(true);
                     filterSelect.appendChild(filterOption);
+
+                    // تعبئة قائمة إضافة الطلاب
+                    const excelOption = option.cloneNode(true);
+                    excelSelect.appendChild(excelOption);
                 });
 
                 console.log('تم تحميل الأقسام:', data);
@@ -609,12 +775,6 @@
                 console.error('خطأ في تحميل الأقسام:', error);
                 showToast('خطأ في تحميل الأقسام', 'error');
             }
-        }
-
-        // تعيين تاريخ اليوم
-        function setTodayDate() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('uploadDate').value = today;
         }
 
         // عرض Toast
@@ -643,7 +803,7 @@
 
         function closeSidebar() {
             document.getElementById('fileDetailsSidebar').classList.remove('active');
-            document.querySelectorAll('#filesTable tr').forEach(tr => {
+            document.querySelectorAll('#studentsTable tr').forEach(tr => {
                 tr.classList.remove('selected');
             });
         }
@@ -678,9 +838,10 @@
             document.getElementById('dashboardScreen').style.display = 'block';
             document.getElementById('employeeName').textContent = `مرحباً ${currentEmployee.name}`;
             document.getElementById('adminFilters').style.display = 'none'; // إخفاء فلاتر المدير
-            document.getElementById('addFileForm').style.display = 'block'; // إظهار نموذج الإضافة
+            document.getElementById('btnAddGeneralFile').style.display = 'block';
+            document.getElementById('btnAddStudentsBtn').style.display = 'none';
 
-            await loadFiles();
+            await loadData();
             showToast('تم تسجيل الدخول بنجاح');
         }
 
@@ -703,9 +864,10 @@
                 document.getElementById('dashboardScreen').style.display = 'block';
                 document.getElementById('employeeName').textContent = `مرحباً ${currentEmployee.name}`;
                 document.getElementById('adminFilters').style.display = 'flex'; // إظهار فلاتر المدير
-                document.getElementById('addFileForm').style.display = 'none'; // إخفاء نموذج الإضافة للمدير (اختياري)
+                document.getElementById('btnAddGeneralFile').style.display = 'none';
+                document.getElementById('btnAddStudentsBtn').style.display = 'block'; // إظهار زر إضافة الطلاب
 
-                await loadFiles();
+                await loadData();
                 showToast('تم تسجيل دخول الإدارة بنجاح');
             } else {
                 showToast('كلمة المرور غير صحيحة', 'error');
@@ -716,7 +878,7 @@
         function logout() {
             currentEmployee = null;
             currentStage = null;
-            filesData = [];
+            studentsData = [];
 
             document.getElementById('dashboardScreen').style.display = 'none';
             document.getElementById('loginScreen').style.display = 'flex';
@@ -725,77 +887,206 @@
 
             showToast('تم تسجيل الخروج');
         }
-
-        // تحميل الملفات
-        async function loadFiles() {
+        
+        // تحميل كل البيانات (طلاب + ملفات عامة)
+        async function loadData() {
             try {
-                let query = supabase
-                    .from('archive')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+                // 1. جلب الطلاب
+                let query = supabase.from('students').select('*').order('student_school_id');
 
-                // إذا كان موظف عادي، عرض ملفات قسمه فقط
                 if (currentEmployee.id !== 'admin') {
                     query = query.eq('stage_id', currentStage.id);
                 } else {
-                    // تطبيق فلاتر المدير
                     const stageFilter = document.getElementById('filterStage').value;
-                    const dateFilter = document.getElementById('filterDate').value;
-
                     if (stageFilter) query = query.eq('stage_id', stageFilter);
-                    if (dateFilter) query = query.eq('upload_date', dateFilter);
                 }
 
-                const { data, error } = await query;
+                const { data: students, error: studentError } = await query;
+                if (studentError) throw studentError;
 
-                if (error) throw error;
+                // 2. جلب الملفات المرتبطة
+                const { data: files, error: fileError } = await supabase.from('archive').select('*');
+                if (fileError) throw fileError;
 
-                // ربط أسماء المراحل يدوياً لتجنب أخطاء العلاقات في قاعدة البيانات
-                filesData = (data || []).map(file => {
-                    const stage = allStages.find(s => s.id == file.stage_id);
+                allFiles = files || [];
+
+                // دمج البيانات
+                studentsData = students.map(student => {
+                    const stage = allStages.find(s => s.id == student.stage_id);
+                    const studentFile = allFiles.find(f => f.student_db_id == student.id);
                     return {
-                        ...file,
-                        stages: { name: stage ? stage.name : 'غير معروف' }
+                        ...student,
+                        stage_name: stage ? stage.name : 'غير معروف',
+                        file: studentFile || null
                     };
                 });
 
-                renderFilesTable();
+                // للمدير: عرض الطلاب الذين لديهم ملفات فقط
+                let dataToRender = studentsData;
+                if (currentEmployee.id === 'admin') {
+                    dataToRender = studentsData.filter(s => s.file);
+                }
+                renderStudentsTable(dataToRender);
                 updateStats();
 
-                console.log('تم تحميل الملفات:', data);
+                // 2. جلب الملفات العامة (التي لا ترتبط بطالب)
+                let generalFilesQuery = supabase
+                    .from('archive')
+                    .select('*')
+                    .is('student_db_id', null) // Get files with no student
+                    .order('created_at', { ascending: false });
+
+                if (currentEmployee.id !== 'admin') {
+                    generalFilesQuery = generalFilesQuery.eq('stage_id', currentStage.id);
+                } else {
+                    const stageFilter = document.getElementById('filterStage').value;
+                    if (stageFilter) {
+                        generalFilesQuery = generalFilesQuery.eq('stage_id', stageFilter);
+                    }
+                }
+
+                const { data: generalFiles, error: generalFilesError } = await generalFilesQuery;
+                if (generalFilesError) throw generalFilesError;
+
+                // إضافة اسم القسم للملفات في وضع المدير
+                const enrichedGeneralFiles = generalFiles.map(file => {
+                    const stage = allStages.find(s => s.id == file.stage_id);
+                    return {
+                        ...file,
+                        stage_name: stage ? stage.name : 'غير معروف'
+                    };
+                });
+
+                renderGeneralFilesTable(enrichedGeneralFiles);
+
             } catch (error) {
-                console.error('خطأ في تحميل الملفات:', error);
-                showToast('خطأ في تحميل الملفات', 'error');
+                console.error('خطأ:', error);
+                showToast('خطأ في تحميل البيانات', 'error');
             }
+        }
+
+        // فلترة الطلاب (بحث)
+        function filterStudents() {
+            const searchText = document.getElementById('globalSearch').value.toLowerCase();
+            const filterType = document.getElementById('searchFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            let sourceData = studentsData;
+            if (currentEmployee.id === 'admin') {
+                sourceData = studentsData.filter(s => s.file);
+            }
+
+            const filtered = sourceData.filter(s => {
+                const matchName = s.name.toLowerCase().includes(searchText);
+                const matchId = s.student_school_id.toString().includes(searchText);
+                let matchesSearch = false;
+                
+                if (filterType === 'name') matchesSearch = matchName;
+                else if (filterType === 'id') matchesSearch = matchId;
+                else matchesSearch = matchName || matchId;
+
+                let matchesStatus = true;
+                if (statusFilter !== 'all') {
+                    if (statusFilter === 'not_uploaded') {
+                        matchesStatus = !s.file;
+                    } else {
+                        matchesStatus = s.file && s.file.status === statusFilter;
+                    }
+                }
+
+                return matchesSearch && matchesStatus;
+            });
+
+            renderStudentsTable(filtered);
         }
 
         // إعادة تعيين الفلاتر
         function resetFilters() {
             document.getElementById('filterStage').value = '';
-            document.getElementById('filterDate').value = '';
-            loadFiles();
+            document.getElementById('globalSearch').value = '';
+            document.getElementById('statusFilter').value = 'all';
+            loadData();
         }
 
-        // عرض الملفات في الجدول
-        function renderFilesTable() {
-            const tbody = document.getElementById('filesTableBody');
+        // عرض الجدول
+        function renderStudentsTable(data) {
+            const tbody = document.getElementById('studentsTableBody');
             tbody.innerHTML = '';
 
-            if (filesData.length === 0) {
+            if (data.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align: center; padding: 40px; color: #666;">
-                            لا توجد ملفات مضافة بعد
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #666;">
+                            لا توجد بيانات لعرضها
                         </td>
                     </tr>
                 `;
                 return;
             }
 
-            filesData.forEach((file, index) => {
+            data.forEach((student, index) => {
                 const tr = document.createElement('tr');
-                tr.dataset.id = file.id;
-                tr.onclick = () => selectFile(tr, file);
+                
+                let statusHtml = '<span style="color: #999;">⚪ لم يتم الرفع</span>';
+                let actionBtn = `<button class="btn btn-outline" style="padding: 5px 10px; font-size: 14px;" onclick="event.stopPropagation(); prepareUpload('${student.id}', '${student.name}')">📤 رفع ملف</button>`;
+
+                if (student.file) {
+                    tr.onclick = () => selectFile(tr, student.file, student);
+                    
+                    if (student.file.status === 'accepted') {
+                        statusHtml = '<span style="color: #4CAF50; font-weight:bold;">✓ معتمد</span>';
+                    } else if (student.file.status === 'rejected') {
+                        statusHtml = '<span style="color: #f44336; font-weight:bold;">✗ مرفوض</span>';
+                    } else if (student.file.status === 'review') {
+                        statusHtml = '<span style="color: var(--primary-color); font-weight:bold;">تمت المراجعة</span>';
+                    } else {
+                        statusHtml = '<span style="color: #FF9800; font-weight:bold;">⏳ قيد الانتظار</span>';
+                    }
+                    
+                    actionBtn = `
+                        <button onclick="event.stopPropagation(); previewFile('${student.file.id}')" style="background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 18px;" title="معاينة">👁️</button>
+                    `;
+                }
+
+                // زر الحذف للمدير
+                let deleteBtn = '';
+                if (currentEmployee.id === 'admin') {
+                    deleteBtn = `
+                        <button onclick="event.stopPropagation(); deleteStudent('${student.id}')" style="background: none; border: none; color: #f44336; cursor: pointer; font-size: 18px; margin-right: 10px;" title="حذف الطالب">
+                            🗑️
+                        </button>
+                    `;
+                }
+
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${student.student_school_id}</strong></td>
+                    <td>${student.name}</td>
+                    <td>${student.stage_name}</td>
+                    <td>${statusHtml}</td>
+                    <td>
+                        ${actionBtn}
+                        ${deleteBtn}
+                    </td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // عرض جدول الملفات العامة
+        function renderGeneralFilesTable(files) {
+            const tbody = document.getElementById('generalFilesTableBody');
+            tbody.innerHTML = '';
+
+            if (!files || files.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: #666;">لا توجد ملفات عامة</td></tr>`;
+                return;
+            }
+
+            files.forEach((file, index) => {
+                const tr = document.createElement('tr');
+                tr.onclick = () => selectGeneralFile(tr, file);
 
                 // تنسيق الحالة
                 let statusBadge = '';
@@ -807,58 +1098,86 @@
                         statusBadge = '<span style="background: #f44336; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px;">✗ مرفوض</span>';
                         break;
                     case 'review':
-                        statusBadge = '<span style="background: #FF9800; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px;">↻ تحت المراجعة</span>';
+                        statusBadge = '<span style="background: var(--primary-color); color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px;">تمت المراجعة</span>';
                         break;
                     default:
                         statusBadge = '<span style="background: #9E9E9E; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px;">⏳ معلق</span>';
                 }
 
-                // تنسيق النوع
-                let typeIcon = '';
-                switch (file.file_type) {
-                    case 'pdf': typeIcon = '📄'; break;
-                    case 'word': typeIcon = '📝'; break;
-                    case 'excel': typeIcon = '📊'; break;
-                    case 'image': typeIcon = '🖼️'; break;
-                    default: typeIcon = '📎';
+                let deleteBtn = '';
+                if (currentEmployee.id === 'admin') {
+                    deleteBtn = `
+                        <button onclick="event.stopPropagation(); deleteGeneralFile('${file.id}')" style="background: none; border: none; color: #f44336; cursor: pointer; font-size: 18px; margin-right: 10px;" title="حذف الملف">
+                            🗑️
+                        </button>
+                    `;
                 }
 
                 tr.innerHTML = `
                     <td>${index + 1}</td>
-                    <td><strong>${file.title || 'بدون عنوان'}</strong></td>
-                    <td>${typeIcon} ${file.file_type || 'غير معروف'}</td>
-                    <td>
-                        <a href="${file.file_url}" target="_blank" style="color: var(--primary-color); text-decoration: none;">
-                            🔗 رابط الملف
-                        </a>
-                    </td>
-                    <td>${new Date(file.upload_date).toLocaleDateString('ar-SA')}</td>
+                    <td><strong>${file.title}</strong></td>
+                    <td>${file.file_type}</td>
+                    <td>${new Date(file.created_at).toLocaleDateString('ar-SA')}</td>
                     <td>${statusBadge}</td>
                     <td>
-                        <button onclick="event.stopPropagation(); previewFile('${file.id}', '${file.file_url}')" style="background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 18px;" title="معاينة">
-                            👁️
-                        </button>
-                        ${currentEmployee.id === 'admin' ? `
-                            <button onclick="event.stopPropagation(); deleteFile('${file.id}')" style="background: none; border: none; color: #f44336; cursor: pointer; font-size: 18px; margin-right: 10px;" title="حذف">
-                                🗑️
-                            </button>
-                        ` : ''}
+                        <button onclick="event.stopPropagation(); previewFile(null, '${file.id}')" style="background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 18px;" title="معاينة">👁️</button>
+                        ${deleteBtn}
                     </td>
                 `;
-
                 tbody.appendChild(tr);
             });
         }
 
-        // اختيار ملف
-        function selectFile(tr, file) {
+        // تجهيز رفع ملف عام
+        function prepareGeneralUpload() {
+            document.getElementById('addFileForm').style.display = 'block';
+            document.getElementById('uploadStudentId').value = ''; // أهم خطوة: تفريغ حقل الطالب
+            document.getElementById('uploadStudentName').textContent = 'ملف عام للقسم';
+            
+            // إعادة تعيين الحقول
+            document.getElementById('fileTitle').value = '';
+            document.getElementById('fileUrl').value = '';
+            document.getElementById('fileDescription').value = '';
+
+            document.getElementById('fileTitle').focus();
+            document.getElementById('addFileForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // تجهيز رفع ملف
+        function prepareUpload(studentId, studentName) {
+            document.getElementById('addFileForm').style.display = 'block';
+            document.getElementById('uploadStudentId').value = studentId;
+            document.getElementById('uploadStudentName').textContent = studentName;
+            document.getElementById('fileTitle').focus();
+            // Scroll to form
+            document.getElementById('addFileForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideUploadForm() {
+            document.getElementById('addFileForm').style.display = 'none';
+        }
+
+        // اختيار ملف للعرض
+        function selectFile(tr, file, student) {
             // إزالة التحديد من جميع الصفوف
-            document.querySelectorAll('#filesTable tr').forEach(row => {
+            document.querySelectorAll('#studentsTable tr').forEach(row => {
                 row.classList.remove('selected');
             });
 
             // إضافة التحديد للصف الحالي
             tr.classList.add('selected');
+
+            // تحديث الحالة تلقائياً عند مشاهدة المدير للملف (إذا كان معلقاً)
+            if (currentEmployee && currentEmployee.id === 'admin' && file.status === 'pending') {
+                file.status = 'review'; // تحديث محلي
+                if (student && student.file) student.file.status = 'review'; // تحديث مرجع الطالب
+                markFileAsSeen(file.id); // تحديث قاعدة البيانات
+                
+                // تحديث الشارة في الجدول فوراً
+                if (tr.cells[4]) {
+                    tr.cells[4].innerHTML = '<span style="color: var(--primary-color); font-weight:bold;">تمت المراجعة</span>';
+                }
+            }
 
             // تحديث المعاينة (Preview)
             let previewUrl = file.file_url;
@@ -875,10 +1194,10 @@
             // تعبئة التفاصيل في الـ Sidebar
             const detailsDiv = document.getElementById('fileDetailsInfo');
             detailsDiv.innerHTML = `
-                <h3 style="margin-top: 0;">${file.title}</h3>
+                <h3 style="margin-top: 0;">${student.name}</h3>
                 <div class="info-group">
                     <div style="font-size: 12px; color: #666;">القسم</div>
-                    <div style="font-weight: bold;">${file.stages?.name || 'غير معروف'}</div>
+                    <div style="font-weight: bold;">${student.stage_name}</div>
                 </div>
                 <div class="info-group">
                     <div style="font-size: 12px; color: #666;">النوع</div>
@@ -909,6 +1228,66 @@
             openSidebar();
         }
 
+        // اختيار ملف عام للعرض
+        function selectGeneralFile(tr, file) {
+            document.querySelectorAll('#generalFilesTable tr, #studentsTable tr').forEach(row => {
+                row.classList.remove('selected');
+            });
+            tr.classList.add('selected');
+
+            // تحديث الحالة تلقائياً عند مشاهدة المدير للملف (إذا كان معلقاً)
+            if (currentEmployee && currentEmployee.id === 'admin' && file.status === 'pending') {
+                file.status = 'review'; // تحديث محلي
+                markFileAsSeen(file.id); // تحديث قاعدة البيانات
+                
+                // تحديث الشارة في الجدول فوراً
+                if (tr.cells[4]) {
+                    tr.cells[4].innerHTML = '<span style="color: var(--primary-color); font-weight:bold;">تمت المراجعة</span>';
+                }
+            }
+
+            let previewUrl = file.file_url;
+            if (previewUrl.includes('drive.google.com')) {
+                const match = previewUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                if (match) {
+                    previewUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+                }
+            }
+            document.getElementById('filePreview').src = previewUrl;
+            currentFileUrl = file.file_url;
+            currentFileId = file.id;
+
+            const detailsDiv = document.getElementById('fileDetailsInfo');
+            detailsDiv.innerHTML = `
+                <h3 style="margin-top: 0;">${file.title}</h3>
+                <div class="info-group">
+                    <div style="font-size: 12px; color: #666;">القسم</div>
+                    <div style="font-weight: bold;">${file.stage_name}</div>
+                </div>
+                <div class="info-group">
+                    <div style="font-size: 12px; color: #666;">النوع</div>
+                    <div>${file.file_type || 'غير معروف'}</div>
+                </div>
+                <div class="info-group">
+                    <div style="font-size: 12px; color: #666;">تاريخ الرفع</div>
+                    <div>${new Date(file.created_at).toLocaleString('ar-SA')}</div>
+                </div>
+                <div class="info-group">
+                    <div style="font-size: 12px; color: #666;">الوصف</div>
+                    <div>${file.description || 'لا يوجد وصف'}</div>
+                </div>
+                <div class="info-group">
+                    <div style="font-size: 12px; color: #666;">الحالة الحالية</div>
+                    <select id="fileStatusSelect" style="width: 100%; margin-top: 5px;">
+                        ${fileStatuses.map(status =>
+                `<option value="${status.value}" ${file.status === status.value ? 'selected' : ''}>${status.label}</option>`
+            ).join('')}
+                    </select>
+                </div>
+            `;
+            openSidebar();
+        }
+
         // تنسيق حجم الملف
         function formatFileSize(bytes) {
             if (!bytes) return '0 ب';
@@ -919,12 +1298,28 @@
         }
 
         // معاينة الملف
-        function previewFile(fileId, fileUrl) {
-            // البحث عن الملف في البيانات وعرض تفاصيله
-            const file = filesData.find(f => f.id === fileId);
-            if (file) {
-                const tr = document.querySelector(`tr[data-id="${fileId}"]`);
-                if (tr) selectFile(tr, file);
+        function previewFile(studentFileId, generalFileId) {
+            if (studentFileId) {
+                const student = studentsData.find(s => s.file && s.file.id === studentFileId);
+                if (student) {
+                    selectFile(document.createElement('tr'), student.file, student);
+                }
+            } else if (generalFileId) {
+                // This part needs the general files data to be accessible globally or passed.
+                // For simplicity, we'll just open the sidebar. A full implementation would find the file and select it.
+                showToast('للمعاينة والتعديل، الرجاء النقر على صف الملف مباشرة.', 'success');
+            }
+        }
+
+        // دالة لتحديث حالة الملف إلى "تمت المراجعة" في الخلفية
+        async function markFileAsSeen(fileId) {
+            try {
+                await supabase
+                    .from('archive')
+                    .update({ status: 'review' })
+                    .eq('id', fileId);
+            } catch (error) {
+                console.error('Error marking file as seen:', error);
             }
         }
 
@@ -953,30 +1348,23 @@
                 if (error) throw error;
 
                 showToast('تم تحديث حالة الملف');
-                await loadFiles();
-
-                // تحديث الصف في الجدول
-                const fileIndex = filesData.findIndex(f => f.id === currentFileId);
-                if (fileIndex !== -1) {
-                    filesData[fileIndex].status = newStatus;
-                    renderFilesTable();
-                }
+                await loadData();
             } catch (error) {
                 console.error('خطأ في تحديث الحالة:', error);
                 showToast('خطأ في تحديث الحالة', 'error');
             }
         }
 
-        // حفظ ملف جديد
+        // حفظ ملف جديد (طالب أو عام)
         async function saveFile() {
+            const studentId = document.getElementById('uploadStudentId').value;
             const title = document.getElementById('fileTitle').value.trim();
             const fileType = document.getElementById('fileType').value;
             const fileUrl = document.getElementById('fileUrl').value.trim();
-            const uploadDate = document.getElementById('uploadDate').value;
             const description = document.getElementById('fileDescription').value.trim();
 
             // التحقق من البيانات
-            if (!title || !fileUrl || !uploadDate) {
+            if (!title || !fileUrl) {
                 showToast('الرجاء ملء جميع الحقول المطلوبة', 'error');
                 return;
             }
@@ -988,6 +1376,15 @@
             }
 
             try {
+                let stageId;
+                if (studentId) {
+                    // ملف مرتبط بطالب
+                    const student = studentsData.find(s => s.id == studentId);
+                    stageId = student.stage_id;
+                } else {
+                    stageId = currentStage.id; // ملف عام لقسم الموظف الحالي
+                }
+
                 // حساب حجم الملف (محاكاة - في الواقع يحتاج لـ API)
                 const fileSize = Math.floor(Math.random() * 5000000) + 100000; // 100KB إلى 5MB
 
@@ -996,55 +1393,67 @@
                     .insert([{
                         title: title,
                         description: description,
-                        stage_id: parseInt(currentStage.id),
+                        stage_id: stageId,
+                        student_db_id: studentId || null,
                         file_url: fileUrl,
                         file_type: fileType,
                         file_size: fileSize,
-                        upload_date: uploadDate,
-                        uploader_id: '00000000-0000-0000-0000-000000000000', // معرف افتراضي
+                        upload_date: new Date().toISOString(),
                         status: 'pending'
                     }]);
 
                 if (error) throw error;
 
                 // إعادة تعيين الحقول
+                hideUploadForm();
                 document.getElementById('fileTitle').value = '';
                 document.getElementById('fileUrl').value = '';
                 document.getElementById('fileDescription').value = '';
-                setTodayDate();
 
                 showToast('تم حفظ الملف بنجاح وهو بانتظار المراجعة');
-                await loadFiles();
-
-                // معاينة الملف الجديد
-                if (data && data[0]) {
-                    previewFile(data[0].id, fileUrl);
-                }
+                await loadData();
             } catch (error) {
                 console.error('خطأ في حفظ الملف:', error);
                 showToast('خطأ في حفظ الملف: ' + error.message, 'error');
             }
         }
 
-        // حذف ملف
-        async function deleteFile(fileId) {
-            if (!confirm('هل أنت متأكد من حذف هذا الملف؟ لا يمكن التراجع عن هذا الإجراء.')) {
+        // حذف طالب
+        async function deleteStudent(studentId) {
+            if (!confirm('هل أنت متأكد من حذف هذا الطالب؟ سيتم حذف جميع ملفاته أيضاً.')) {
                 return;
             }
 
             try {
                 const { error } = await supabase
-                    .from('archive')
+                    .from('students')
                     .delete()
-                    .eq('id', fileId);
+                    .eq('id', studentId);
 
                 if (error) throw error;
 
-                showToast('تم حذف الملف بنجاح');
-                await loadFiles();
-                closeSidebar();
+                showToast('تم حذف الطالب بنجاح');
+                await loadData();
             } catch (error) {
-                console.error('خطأ في حذف الملف:', error);
+                console.error('خطأ في الحذف:', error);
+                showToast('خطأ في الحذف', 'error');
+            }
+        }
+
+        // حذف ملف عام
+        async function deleteGeneralFile(fileId) {
+            if (!confirm('هل أنت متأكد من حذف هذا الملف؟')) {
+                return;
+            }
+            try {
+                const { error } = await supabase
+                    .from('archive')
+                    .delete()
+                    .eq('id', fileId);
+                if (error) throw error;
+                showToast('تم حذف الملف بنجاح');
+                await loadData();
+            } catch (error) {
                 showToast('خطأ في حذف الملف', 'error');
             }
         }
@@ -1057,25 +1466,14 @@
 
         // تحديث الإحصائيات
         function updateStats() {
-            // إجمالي الملفات
-            document.getElementById('totalFiles').textContent = filesData.length;
+            const total = studentsData.length;
+            const completed = studentsData.filter(s => s.file).length;
+            const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-            // إحصائيات حسب النوع
-            const typeStats = {};
-            filesData.forEach(file => {
-                const type = file.file_type || 'غير معروف';
-                typeStats[type] = (typeStats[type] || 0) + 1;
-            });
-
-            // رسم مخطط النوع (يمكن إضافة Chart.js لاحقاً)
-            console.log('إحصائيات الأنواع:', typeStats);
-
-            // إحصائيات حسب التاريخ
-            const dateStats = {};
-            filesData.forEach(file => {
-                const date = new Date(file.upload_date).toLocaleDateString('ar-SA');
-                dateStats[date] = (dateStats[date] || 0) + 1;
-            });
+            document.getElementById('totalStudents').textContent = total;
+            document.getElementById('completedFiles').textContent = completed;
+            document.getElementById('completionRate').textContent = rate + '%';
+            document.getElementById('progressBar').style.width = rate + '%';
         }
 
         // إعدادات الموظف
@@ -1096,6 +1494,68 @@
             // حفظ إعدادات الموظف (يمكن إضافتها لاحقاً)
             showToast('تم حفظ الإعدادات');
             closeModal('employeeSettingsModal');
+        }
+
+        // --- دوال إضافة الطلاب (Excel) ---
+        function showAddStudentsModal() {
+            showModal('addStudentsModal');
+        }
+
+        async function processAndSaveStudents() {
+            const stageId = document.getElementById('excelTargetStage').value;
+            const rawData = document.getElementById('excelPasteArea').value.trim();
+
+            if (!stageId) {
+                alert('الرجاء اختيار القسم المستهدف');
+                return;
+            }
+            if (!rawData) {
+                alert('الرجاء لصق البيانات');
+                return;
+            }
+
+            // تحليل البيانات (سطر سطر)
+            const rows = rawData.split('\n');
+            const studentsToAdd = [];
+            const existingIds = studentsData.map(s => s.student_school_id.toString());
+            let duplicates = 0;
+
+            rows.forEach(row => {
+                // تقسيم السطر بالمسافة أو Tab
+                const cols = row.split(/\t/); // Excel uses Tab usually
+                if (cols.length >= 2) {
+                    const id = cols[0].trim();
+                    const name = cols[1].trim();
+
+                    if (id && name) {
+                        if (existingIds.includes(id)) {
+                            duplicates++;
+                        } else {
+                            studentsToAdd.push({
+                                student_school_id: id,
+                                name: name,
+                                stage_id: parseInt(stageId)
+                            });
+                            existingIds.push(id); // Prevent duplicates within the paste
+                        }
+                    }
+                }
+            });
+
+            if (studentsToAdd.length === 0) {
+                alert('لم يتم العثور على بيانات صالحة أو جميع الطلاب مضافين مسبقاً.');
+                return;
+            }
+
+            const { error } = await supabase.from('students').insert(studentsToAdd);
+            if (error) {
+                alert('خطأ في الحفظ: ' + error.message);
+            } else {
+                alert(`تمت إضافة ${studentsToAdd.length} طالب بنجاح.` + (duplicates > 0 ? ` (تم تجاهل ${duplicates} مكرر)` : ''));
+                document.getElementById('excelPasteArea').value = '';
+                closeModal('addStudentsModal');
+                await loadData();
+            }
         }
 
         // --- دوال إدارة الأقسام (للمدير) ---
@@ -1211,7 +1671,7 @@
                 const exportData = {
                     employee: currentEmployee.name,
                     stage: currentStage.name,
-                    files: filesData,
+                    students: studentsData,
                     exportDate: new Date().toISOString()
                 };
 
@@ -1251,13 +1711,13 @@
         window.showAdminLogin = showAdminLogin;
         window.loginAdmin = loginAdmin;
         window.logout = logout;
-        window.loadFiles = loadFiles;
+        window.loadData = loadData;
         window.resetFilters = resetFilters;
         window.saveFile = saveFile;
         window.previewFile = previewFile;
         window.openExternal = openExternal;
         window.updateFileStatus = updateFileStatus;
-        window.deleteFile = deleteFile;
+        window.deleteStudent = deleteStudent;
         window.showStats = showStats;
         window.showEmployeeSettings = showEmployeeSettings;
         window.saveEmployeeSettings = saveEmployeeSettings;
@@ -1267,6 +1727,13 @@
         window.editStage = editStage;
         window.closeModal = closeModal;
         window.closeSidebar = closeSidebar;
+        window.showAddStudentsModal = showAddStudentsModal;
+        window.processAndSaveStudents = processAndSaveStudents;
+        window.prepareGeneralUpload = prepareGeneralUpload;
+        window.deleteGeneralFile = deleteGeneralFile;
+        window.prepareUpload = prepareUpload;
+        window.hideUploadForm = hideUploadForm;
+        window.filterStudents = filterStudents;
     </script>
 </body>
 
