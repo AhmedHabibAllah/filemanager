@@ -15,6 +15,7 @@
             --accent-color: #D7CCC8; /* بيج غامق/رمادي دافئ */
             --highlight-color: #A1887F; /* لون تمييز */
             --bg-color: #FDFBF7; /* بيج فاتح جداً (كريمي) */
+            --bg-color: #f4f6f8; /* خلفية عصرية فاتحة ومريحة للعين */
             --card-bg: #FFFFFF;
             --sidebar-width: 350px;
         }
@@ -25,9 +26,10 @@
             margin: 0;
             min-height: 100vh;
             overflow: auto;
+            /* overflow: hidden; removed to allow scrolling */
             -webkit-overflow-scrolling: touch;
             direction: rtl;
-            font-size: 18px;
+            font-size: 22px; /* تكبير الخط */
             color: #3E2723; /* نص بني غامق جداً */
         }
 
@@ -46,6 +48,7 @@
         /* شاشات الدخول */
         .center-screen {
             display: flex;
+            flex-direction: column; /* ترتيب عمودي للعنوان والمربع */
             justify-content: center;
             align-items: center;
             position: fixed;
@@ -54,21 +57,50 @@
             right: 0;
             bottom: 0;
             z-index: 10;
-            background: linear-gradient(135deg, #efebe9 0%, #d7ccc8 100%);
+            background: linear-gradient(135deg, #efebe9 0%, #d7ccc8 100%); /* Reverted to lighter background */
             transition: all 0.3s;
             overflow: auto;
             padding: 20px;
             box-sizing: border-box;
             max-height: 100vh;
+            gap: 20px;
+        }
+
+        /* تنسيق الهيدر الجديد */
+        .site-header {
+            background: rgba(255, 255, 255, 0.95); /* خلفية بيضاء أنيقة للنص واللوجو */
+            padding: 20px 50px;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2); /* ظل ناعم وكبير للفخامة */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            gap: 30px;
+            text-align: center;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .site-logo {
+            height: 120px; /* تكبير اللوجو */
+            width: auto;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+        .site-title {
+            font-size: 48px; /* تكبير العنوان */
+            font-weight: 800;
+            color: var(--primary-color);
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
         }
 
         .box {
             background: var(--card-bg);
-            padding: 40px;
-            border-radius: 20px;
+            padding: 50px; /* زيادة الحشوة */
+            border-radius: 25px;
             width: 95%;
-            max-width: 500px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            max-width: 800px; /* تكبير عرض الصندوق */
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1); /* Reverted shadow */
             border: 1px solid #efebe9;
             text-align: center;
         }
@@ -76,15 +108,17 @@
         h2 {
             margin-bottom: 20px;
             color: var(--primary-color);
+            font-size: 32px; /* تكبير العناوين */
         }
 
         .btn {
             width: 100%;
-            padding: 15px 20px;
+            padding: 20px 30px; /* تكبير الأزرار */
             margin-bottom: 10px;
-            font-size: 18px;
+            font-size: 24px; /* تكبير خط الأزرار */
             border: 1px solid transparent;
-            border-radius: 12px; /* زوايا أكثر استدارة */
+            border-radius: 15px; /* زوايا أكثر استدارة */
+            border-radius: 18px;
             cursor: pointer;
             background: linear-gradient(145deg, var(--primary-light), var(--primary-color));
             color: white;
@@ -135,14 +169,14 @@
         textarea,
         select {
             width: 100%;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 18px; /* تكبير الحقول */
+            border-radius: 12px;
             border: 1px solid #d7ccc8;
             background-color: #fafafa;
             margin-bottom: 15px;
             box-sizing: border-box;
             font-family: inherit;
-            font-size: 16px;
+            font-size: 20px; /* تكبير خط الحقول */
             font-weight: 500;
             transition: 0.3s;
             color: #4e342e;
@@ -157,27 +191,47 @@
         /* شاشة البيانات الرئيسية */
         #dashboardScreen {
             display: none;
-            min-height: 100vh;
+            min-height: 100vh; /* Reverted to min-height */
             width: 100%;
             position: relative;
-            overflow: auto;
+            /* overflow: hidden; removed */
+            /* flex-direction: column; removed */
         }
 
         /* تخطيط لوحة التحكم الجديد */
         .dashboard-layout {
             display: flex;
-            height: calc(100vh - 80px); /* ارتفاع الشاشة ناقص الهيدر */
-            overflow: hidden;
+            flex-wrap: wrap; /* Allow wrapping */
+            /* overflow: hidden; removed */
+        }
+
+        /* هيدر الداشبورد الجديد */
+        .dashboard-top-header {
+            background: #fff;
+            padding: 15px 40px;
+            padding: 10px 30px; /* تقليل الحشوة لتوفير مساحة */
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border-bottom: 1px solid #eee;
+            position: relative;
+            z-index: 20;
+        }
+        .dashboard-top-header::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
         }
 
         .content-panel {
-            flex: 2;
+            flex: 2 1 600px; /* Allow growing and shrinking with base width */
             padding: 20px;
-            overflow-y: auto;
+            /* overflow-y: auto; removed */
+            display: flex;
+            flex-direction: column;
         }
 
         .preview-panel {
-            flex: 1;
+            flex: 1 1 400px; /* Allow growing and shrinking */
             background: #fdfbf7;
             border-right: 1px solid #ddd;
             padding: 10px;
@@ -189,8 +243,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
             background: var(--card-bg);
-            padding: 15px 20px;
+            padding: 20px 30px;
+            padding: 15px 30px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             z-index: 10;
             border-bottom: 1px solid #efebe9;
@@ -206,9 +263,9 @@
         }
         .category-btn {
             flex: 1;
-            min-width: 150px;
+            min-width: 200px;
             border-radius: 15px;
-            font-size: 16px;
+            font-size: 20px;
             border: 1px solid #d7ccc8;
             background: white;
             color: var(--primary-color);
@@ -236,6 +293,7 @@
 
         thead {
             background: #efebe9;
+            background: linear-gradient(to bottom, #f8f9fa, #efebe9);
             position: sticky;
             top: 0;
             z-index: 5;
@@ -370,11 +428,26 @@
             border-radius: 15px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             border-top: 4px solid var(--primary-light);
-            transition: transform 0.3s;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
         .stats-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+        .stats-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+        }
+        .stats-card:hover::after {
+            left: 100%;
+            transition: 0.7s;
         }
 
         /* الإعدادات */
@@ -436,6 +509,9 @@
             padding: 20px;
             margin-top: 20px;
             background: #4e342e;
+            padding: 15px;
+            margin-top: auto; /* دفع الفوتر للأسفل */
+            background: var(--primary-color);
             color: #efebe9;
             border-radius: 15px;
             font-size: 14px;
@@ -491,10 +567,13 @@
 
     <!-- شاشة الدخول الرئيسية -->
     <div class="center-screen" id="loginScreen">
+        <div class="site-header animate-fade">
+            <img src="logo3.png" alt="شعار المدرسة" class="site-logo">
+            <h1 class="site-title">مدارس التربية النموذجية<br><span style="font-size: 0.8em; font-weight: 500;">الروابي</span></h1>
+        </div>
         <div class="box animate-fade">
             <h2 style="font-weight: 800;">🎓 نظام الأرشفة الذكي</h2>
             <p style="color:#666; margin-bottom:30px;">إدارة احترافية وسلسة لبيانات وملفات الطلاب</p>
-
             <select id="stageSelect" class="btn" style="background: #fff; color: #4e342e; margin-bottom: 15px; border: 1px solid #d7ccc8;">
                 <option value="">اختر القسم...</option>
                 <!-- سيتم تعبئة الأقسام من قاعدة البيانات -->
@@ -510,6 +589,7 @@
 
             <div style="margin-top: 30px; font-size: 12px; color: #999;">
                 تطوير وتصميم: <span style="color: var(--primary-color); font-weight: bold;">الأستاذ أحمد حبيب الله</span>
+                <div style="direction: ltr; margin-top: 5px; font-size: 14px; font-weight: bold;">designissue@gmail.com</div>
             </div>
         </div>
     </div>
@@ -528,8 +608,13 @@
 
     <!-- شاشة رئيسية للموظف -->
     <div id="dashboardScreen">
+        <div class="dashboard-top-header">
+            <img src="logo3.png" alt="شعار المدرسة" style="height: 60px; width: auto;">
+            <h2 style="margin: 0; font-size: 24px; color: var(--primary-color);">مدارس التربية النموذجية - الروابي</h2>
+        </div>
+
         <div class="header-bar">
-            <h3 id="employeeName" style="margin:0;"></h3>
+            <h3 id="employeeName" style="margin:0; font-size: 18px;"></h3>
             <div style="display: flex; gap: 10px;">
                 <button class="btn btn-success" id="btnAddStudentsBtn" onclick="showAddStudentsModal()" style="width:auto; display:none;">➕ إضافة طلاب (Excel)</button>
                 <button class="btn" id="btnAddGeneralFile" onclick="prepareGeneralUpload()" style="width:auto; display:none; background: var(--primary-light);">➕ رفع ملف جديد</button>
@@ -554,6 +639,7 @@
                 <!-- البحث العام -->
                 <div class="search-box-container animate-fade">
                     <span style="font-size: 20px;">🔍</span>
+                    <span style="font-size: 20px; padding: 5px;">🔍</span>
                     <input type="text" id="globalSearch" placeholder="بحث عن طالب (الاسم أو الرقم)..." style="margin:0; border:none; background:transparent;" onkeyup="filterStudents()">
                     <select id="searchFilter" style="width: 150px; margin:0; border:none; background: #fafafa;">
                         <option value="all">الكل</option>
@@ -669,11 +755,20 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Footer (تم نقله هنا ليكون أسفل المحتوى دائماً) -->
+                <div class="app-footer">
+                    <div>جميع الحقوق محفوظة © 2026</div>
+                    <div style="margin-top: 10px;">
+                        تطوير وتصميم: <span class="developer-name">الأستاذ أحمد حبيب الله</span>
+                    </div>
+                    <div style="font-size: 14px; margin-top: 5px; opacity: 0.9; font-weight: bold;">designissue@gmail.com</div>
+                </div>
             </div>
 
             <!-- الجزء الأيسر: المعاينة -->
             <div class="preview-panel">
-                <h3 style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee;">👁️ معاينة الملف</h3>
+                <h3 style="margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee; font-size: 18px;">👁️ معاينة الملف</h3>
                 <iframe id="filePreview" class="preview-iframe"
                     sandbox="allow-same-origin allow-scripts allow-popups"></iframe>
             </div>
@@ -685,7 +780,7 @@
             <div style="margin-top: 10px;">
                 تطوير وتصميم: <span class="developer-name">الأستاذ أحمد حبيب الله</span>
             </div>
-            <div style="font-size: 12px; margin-top: 5px; opacity: 0.7;">designissue@gmail.com</div>
+            <div style="font-size: 14px; margin-top: 5px; opacity: 0.9; font-weight: bold;">designissue@gmail.com</div>
         </div>
 
         <!-- القائمة الجانبية لتفاصيل الملف -->
@@ -885,7 +980,7 @@
 
             // الانتقال للوحة الرئيسية
             document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('dashboardScreen').style.display = 'block';
+            document.getElementById('dashboardScreen').style.display = 'block'; /* Reverted to block */
             document.getElementById('employeeName').textContent = `مرحباً ${currentEmployee.name}`;
             document.getElementById('adminFilters').style.display = 'none'; // إخفاء فلاتر المدير
             document.getElementById('btnAddStudentsBtn').style.display = 'none';
@@ -911,7 +1006,7 @@
 
                 closeModal('adminLoginModal');
                 document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('dashboardScreen').style.display = 'block';
+                document.getElementById('dashboardScreen').style.display = 'block'; /* Reverted to block */
                 document.getElementById('employeeName').textContent = `مرحباً ${currentEmployee.name}`;
                 document.getElementById('adminFilters').style.display = 'flex'; // إظهار فلاتر المدير
                 document.getElementById('btnAddStudentsBtn').style.display = 'block'; // إظهار زر إضافة الطلاب
@@ -1841,6 +1936,16 @@
             exportBtn.innerHTML = '📥 تصدير';
             exportBtn.onclick = exportData;
             headerBar.insertBefore(exportBtn, headerBar.firstChild);
+            // التحقق من عدم وجود الزر مسبقاً لتجنب التكرار
+            if (!document.getElementById('btnExportData')) {
+                const exportBtn = document.createElement('button');
+                exportBtn.id = 'btnExportData';
+                exportBtn.className = 'btn btn-outline';
+                exportBtn.style.width = 'auto';
+                exportBtn.innerHTML = '📥 تصدير';
+                exportBtn.onclick = exportData;
+                headerBar.insertBefore(exportBtn, headerBar.firstChild);
+            }
         }
 
         // تهيئة التطبيق عند التحميل
