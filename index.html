@@ -849,6 +849,20 @@
         </div>
     </div>
 
+    <!-- شاشة تأكيد الحذف -->
+    <div class="modal" id="deleteConfirmationModal">
+        <div class="modal-content">
+            <h2 style="text-align:center;">🗑️ تأكيد الحذف</h2>
+            <p id="deleteConfirmationMessage" style="text-align: center; margin-bottom: 20px;"></p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn" id="deleteWithFilesBtn" style="background: #f44336; border-color: #f44336;">حذف الطالب والملفات معاً</button>
+                <button class="btn btn-outline" id="deleteStudentOnlyBtn">حذف الطالب فقط (مع الاحتفاظ بالملفات)</button>
+                <button class="btn btn-outline" id="deleteFilesOnlyBtn">حذف الملفات فقط (مع الاحتفاظ بالطالب)</button>
+                <button class="btn btn-outline" onclick="closeModal('deleteConfirmationModal')">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast">تمت العملية بنجاح</div>
 
@@ -1629,23 +1643,91 @@
 
         // حذف طالب
         async function deleteStudent(studentId) {
-            if (!confirm('هل أنت متأكد من حذف هذا الطالب؟ سيتم حذف جميع ملفاته أيضاً.')) {
+            const student = studentsData.find(s => s.id == studentId);
+            if (!student) {
+                showToast('لم يتم العثور على الطالب', 'error');
                 return;
             }
 
+            const modal = document.getElementById('deleteConfirmationModal');
+            const message = document.getElementById('deleteConfirmationMessage');
+            message.textContent = `خيارات الحذف للطالب: ${student.name}`;
+
+            const deleteWithFilesBtn = document.getElementById('deleteWithFilesBtn');
+            const deleteStudentOnlyBtn = document.getElementById('deleteStudentOnlyBtn');
+            const deleteFilesOnlyBtn = document.getElementById('deleteFilesOnlyBtn');
+
+            // استخدام .onclick مباشرة لتجنب تراكم المستمعين
+            deleteWithFilesBtn.onclick = () => {
+                closeModal('deleteConfirmationModal');
+                executeDelete(studentId, 'all'); // حذف الطالب والملفات
+            };
+
+            deleteStudentOnlyBtn.onclick = () => {
+                closeModal('deleteConfirmationModal');
+                executeDelete(studentId, 'student_only'); // حذف الطالب فقط
+            };
+
+            deleteFilesOnlyBtn.onclick = () => {
+                closeModal('deleteConfirmationModal');
+                executeDelete(studentId, 'files_only'); // حذف الملفات فقط
+            };
+
+            showModal('deleteConfirmationModal');
+        }
+
+        async function executeDelete(studentId, mode) {
             try {
-                const { error } = await supabase
-                    .from('students')
-                    .delete()
-                    .eq('id', studentId);
+                if (mode === 'all') {
+                    // الخيار 1: حذف الطالب والملفات معاً
+                    // أولاً: حذف الملفات المرتبطة
+                    const { error: fileError } = await supabase
+                        .from('archive')
+                        .delete()
+                        .eq('student_db_id', studentId);
 
-                if (error) throw error;
+                    if (fileError) throw fileError;
 
-                showToast('تم حذف الطالب بنجاح');
-                await loadData();
+                    // ثانياً: حذف الطالب
+                    const { error: studentError } = await supabase
+                        .from('students')
+                        .delete()
+                        .eq('id', studentId);
+                    
+                    if (studentError) throw studentError;
+
+                    showToast('تم حذف الطالب وملفاته بنجاح');
+
+                } else if (mode === 'student_only') {
+                    // الخيار 2: حذف الطالب فقط مع تحويل ملفاته إلى "ملفات أخرى"
+                    const { error: updateError } = await supabase
+                        .from('archive')
+                        .update({ student_db_id: null, category: 'other' })
+                        .eq('student_db_id', studentId);
+
+                    if (updateError) throw updateError;
+
+                    // بعد تحويل الملفات، نحذف الطالب
+                    const { error: studentError } = await supabase.from('students').delete().eq('id', studentId);
+                    if (studentError) throw studentError;
+
+                    showToast('تم حذف الطالب ونقل ملفاته إلى "ملفات أخرى"');
+                } else if (mode === 'files_only') {
+                    // الخيار 3: حذف الملفات فقط والاحتفاظ بالطالب
+                    const { error: fileError } = await supabase
+                        .from('archive')
+                        .delete()
+                        .eq('student_db_id', studentId);
+
+                    if (fileError) throw fileError;
+
+                    showToast('تم حذف ملفات الطالب بنجاح');
+                }
+
+                await loadData(); // إعادة تحميل البيانات في كل الحالات
             } catch (error) {
                 console.error('خطأ في الحذف:', error);
-                showToast('خطأ في الحذف', 'error');
+                showToast('خطأ في الحذف: ' + error.message, 'error');
             }
         }
 
